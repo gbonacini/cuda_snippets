@@ -57,12 +57,12 @@ __host__ size_t sortNumericCudaCheck(auto*  toSort, size_t rows, size_t blks=256
     uint32_t  *movedOdd   {nullptr},
               *movedEven  {nullptr};
 
-    if(cudaMallocManaged(&movedOdd, sizeof(bool)) != cudaSuccess){
+    if(cudaMallocManaged(&movedOdd, sizeof(uint32_t)) != cudaSuccess){
         std::cerr << "Error: allocating unified memory  (loops)\n";
         exit(EXIT_FAILURE);
     }
 
-    if(cudaMallocManaged(&movedEven, sizeof(bool)) != cudaSuccess){
+    if(cudaMallocManaged(&movedEven, sizeof(uint32_t)) != cudaSuccess){
         std::cerr << "Error: allocating unified memory  (loops)\n";
         exit(EXIT_FAILURE);
     }
@@ -145,12 +145,12 @@ __host__ size_t sortNumericHybrCuda(auto*  toSort, size_t rows, unsigned char tr
     uint32_t  *movedOdd   {nullptr},
               *movedEven  {nullptr};
 
-    if(cudaMallocManaged(&movedOdd, sizeof(bool)) != cudaSuccess){
+    if(cudaMallocManaged(&movedOdd, sizeof(uint32_t)) != cudaSuccess){
         std::cerr << "Error: allocating unified memory  (loops)\n";
         exit(EXIT_FAILURE);
     }
 
-    if(cudaMallocManaged(&movedEven, sizeof(bool)) != cudaSuccess){
+    if(cudaMallocManaged(&movedEven, sizeof(uint32_t)) != cudaSuccess){
         std::cerr << "Error: allocating unified memory  (loops)\n";
         exit(EXIT_FAILURE);
     }
