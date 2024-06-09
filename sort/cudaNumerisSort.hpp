@@ -174,4 +174,45 @@ __host__ size_t sortNumericHybrCuda(auto*  toSort, size_t rows, unsigned char tr
     return j;
 }
 
+__host__ size_t sortNumericHybrCountCuda(auto*  toSort, size_t rows, unsigned char trigger, size_t interv, size_t blks=256){
+    size_t         j         { 0 },
+                   halfRows  { rows / 2};
+
+    const size_t   BLOCKS { blks },
+                   DIM    { (rows + BLOCKS - 1) / BLOCKS };
+
+    unsigned char  triggerPercent { trigger > static_cast<unsigned char>(90) ? static_cast<unsigned char>(90) : trigger };
+
+    uint32_t  *movedOdd   {nullptr},
+              *movedEven  {nullptr};
+
+    if(cudaMallocManaged(&movedOdd, sizeof(uint32_t)) != cudaSuccess){
+        std::cerr << "Error: allocating unified memory  (loops)\n";
+        exit(EXIT_FAILURE);
+    }
+
+    if(cudaMallocManaged(&movedEven, sizeof(uint32_t)) != cudaSuccess){
+        std::cerr << "Error: allocating unified memory  (loops)\n";
+        exit(EXIT_FAILURE);
+    }
+
+    for( ; j < rows; j++){
+       if( ( j*100/rows < triggerPercent ) && ( j % interv != 0 )){
+          sortNumericCudaEven<<<DIM, BLOCKS>>>(toSort, halfRows);
+          sortNumericCudaOdd<<<DIM, BLOCKS>>>(toSort, halfRows);
+          cudaDeviceSynchronize(); 
+       }else{
+          *movedOdd    = 0;
+          *movedEven   = 0;
+          sortNumericCudaEvenCheck<<<DIM, BLOCKS>>>(toSort, halfRows, movedEven);
+          sortNumericCudaOddCheck<<<DIM, BLOCKS>>>(toSort, halfRows, movedOdd);
+          cudaDeviceSynchronize(); 
+
+          if( *movedOdd == 0  && *movedEven == 0 ) break;
+       }
+    }
+
+    return j;
+}
+
 } // End Namespace

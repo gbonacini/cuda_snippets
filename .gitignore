@@ -1,3 +1,12 @@
 sort/_Old
 *.swp
+*.swo
 sort/test/_Tmp
+sort/test/test
+sort/test/test_hyb
+sort/test/test_ctrl
+sort/test/rng_test_ctrl.txt
+sort/test/rng_test.txt
+sort/test/rng_test_hyb.txt
+sort/test/rng_test_hybcount.txt
+sort/test/test_hybcount
